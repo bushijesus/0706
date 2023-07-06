@@ -1,0 +1,228 @@
+#include <iostream>
+using namespace std;
+
+class Person{
+public:
+    Person(int a, int b, int c):A(a), B(b), C(c){
+        
+    }
+public:
+    int A;
+    int B;
+    int C;
+};
+
+void test01(){
+        Person p1(8, 5, 9);
+        cout << "A: " << p1.A << endl;
+        cout << "B: " << p1.B << endl;
+        cout << "C: " << p1.C << endl;
+}
+
+class Phone{
+public:
+    Phone(){
+        cout << "Phone默认构造函数" << endl;
+    }
+    Phone(string pname){
+        PName = pname;
+        cout << "Phone有参构造函数" << endl;
+    }
+    Phone(const Phone & p){
+        PName = p.PName;
+        cout << "Phone拷贝构造函数" << endl;
+    }
+    ~Phone(){
+        cout << "Phone析构函数" << endl;
+    }
+public:
+    string PName;
+};
+
+class Human{
+public:
+    // Phone Hphone = hphone;   --- 隐式转换法
+    Human(string hname, string hphone):Hname(hname), Hphone(hphone){
+        cout << "Human有参构造函数" << endl;
+    }
+    Human(const Human & h){
+        Hname = h.Hname;
+        Hphone.PName = h.Hphone.PName;
+        cout << "Human拷贝构造函数" << endl;
+    }
+    ~Human(){
+        cout << "Human析构函数" << endl;
+    }
+public:
+    string Hname;
+    Phone Hphone;
+};
+
+void test02(){
+    Human h1("zhangsan", "iphone 14 pro max");
+    cout << "姓名: " << h1.Hname << endl;
+    cout << "手机: " << h1.Hphone.PName << endl;
+    //Human h2(h1);
+}
+
+class Student{
+public:
+    // 静态成员变量
+    static int A;
+};
+
+// 类内声明，类外初始化
+int Student::A = 100;
+
+void test03(){
+    Student s1;
+    cout << "A: " << s1.A << endl;   // 100
+    Student s2;
+    s2.A = 200;              // 共享同一块内存，故将A的值改变了
+    cout << "A: " << s1.A << endl;   // 200
+}
+
+void test04(){
+    Student s;
+    cout << "A: " << s.A << endl;           // 100
+    cout << "A: " << Student::A << endl;    // 100
+}
+
+class Animal{
+public:
+    // 静态成员函数
+    static void func(){
+        cout << "static void func " << endl;
+        s_ani = 19;
+        cout << "s_ani: " << s_ani << endl;
+        // bni = 20;   // 报错  无法区分是哪个对象的数据
+    }
+    // 静态成员变量
+    static int s_ani;
+    //非静态成员变量
+    int bni = 10;
+};
+
+// 类内声明类外初始化
+int Animal::s_ani = 0;
+
+void test05(){
+    Animal a;
+    // 通过对象访问
+    a.func();
+    // 通过类名访问
+    Animal::func();
+}
+
+class Home{
+    // 非静态成员变量， 属于类的对象上
+    int room = 0;
+    // 静态成员变量， 不属于类的对象上
+    static int kitchen;
+    // 非静态成员函数， 不属于类的对象上
+    void cook(){}
+    // 静态成员函数， 不属于类的对象上
+    static void sleep(){}
+};
+
+int Home::kitchen = 1;
+
+void test06(){
+    Home h;
+    // 空对象占用内存空间大小为1
+    // C++编译器给每个空对象也分配了一个字节的空间，是为了区分空对象所占内存的位置
+    cout << "h 的大小：" << sizeof(h) << endl;  // 1
+}
+
+class School{
+public:
+    School(int gate){
+        // this指针指向被调用的成员函数所属的对象
+        this->gate = gate;
+    }
+    School& gateAddGate(School & s){
+        this->gate += s.gate;
+        return *this;
+    }
+    int gate;
+};
+
+void test07(){
+    School s(2);
+    cout << "gate 高：" << s.gate << endl;  // 输出2，不加this输出0
+}
+
+void test08(){
+    School s1(10);
+    School s2(8);
+    s2.gateAddGate(s1).gateAddGate(s1).gateAddGate(s1);
+    cout << "s2 gate 高：" << s2.gate << endl;  // 输出38
+}
+
+class Market{
+public:
+    void showMarket(){
+        cout << "this is class market " << endl;
+    }
+    // 报错原因为传入的指针为空指针
+    void showDrink(){
+        if(this == NULL)
+            return;
+        cout << "market's drink is " << this->Drink << endl;
+    }
+
+    int Drink;
+};
+
+void test09(){
+    Market *m = NULL;
+    m->showMarket();
+    m->showDrink();  // 报错
+}
+
+class  Man{
+public:
+    void showMan() const {
+        // this指针的本质是一个 指针常量，指针的指向是不能改变的，即 Man * const this
+        // 在成员函数后面加const，修饰的是this指向，让指=指针指向的值也不可修改，即 const Man * const this
+
+        //this->Age = 18;
+        this->Bge = 18;
+    }
+    void showWoman(){
+
+    }
+    int  Age;
+    mutable int Bge;
+};
+
+void test10(){
+    const Man m;   // 常对象
+
+    //m.Age = 10;
+    m.Bge = 10;
+    m.showMan();
+    //m.showWoman();   // 常对象不可以调用普通成员函数，因为普通成员函数可以修改属性
+}
+int main(){
+    test09();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
