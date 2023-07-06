@@ -210,7 +210,81 @@ int main(){
 
 
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
+typedef int Elemtype;
+
+typedef struct Node{
+    Elemtype data;
+    struct Node* next;
+}Node;
+
+// 定义链栈
+typedef struct LinkStack{
+    Node * top;    // 栈顶指针
+    int size;      // 链栈的长度
+}LStack;
+
+// 初始化链栈
+void initLinkStack(LStack * LS){
+    LS->top = NULL;
+    LS->size = 0;
+}
+
+// 判断链栈是否为空
+bool LStackIsEmpty(LStack * LS){
+    return LS->size == 0;
+}
+
+// 入栈
+bool Push(LStack * LS, Elemtype e){
+    Node * NewNode = (Node *) malloc(sizeof(Node));
+    if(NewNode == NULL){
+        perror("error\n");
+        return false;
+    }
+    NewNode->data = e;
+    // 头插法
+    NewNode->next = LS->top;
+    LS->top = NewNode;
+    LS->size++;
+    return true;
+}
+
+// 出栈
+Elemtype Pop(LStack * LS){
+    if(LS->size == 0){
+        perror("empty stack\n");
+    }
+    Node * PopedNode = LS->top;
+    Elemtype PopedElem = PopedNode->data;
+    LS->top = LS->top->next;
+    free(PopedNode);
+    return PopedElem;
+}
+
+// 获取栈顶元素（不删除）
+Elemtype Peek(LStack LS){
+    if(LStackIsEmpty(&LS)){
+        perror("empty stack\n");
+    }
+    return LS.top->data;
+}
+
+// 打印栈（栈顶->栈底）
+void printLStack(LStack LS){
+    Node * tmp = LS.top;
+    while(tmp != NULL){
+        printf("%d ", tmp->data);
+        tmp = tmp->next;
+    }
+}
+int main(){
+    LStack linkstack;
+    initLinkStack(& linkstack);
+}
 
 
 
